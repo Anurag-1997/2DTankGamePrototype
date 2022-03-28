@@ -15,6 +15,7 @@ public class TankMovement : MonoBehaviour
     private Rigidbody2D rb2d;
     public float tankSpeed;
     public PhotonView pview;
+    int bulletHitCount = 0;
     
     
     //public GameManageScript gms;
@@ -79,18 +80,39 @@ public class TankMovement : MonoBehaviour
         
         
     }
+    void TankColorChange()
+    {
+        pview.RPC("RPC_TankColorChanger", RpcTarget.AllBuffered);
+    }
 
-    void TankColorChanger()
+    [PunRPC]
+    void RPC_TankColorChanger()
     {
         GetComponent<SpriteRenderer>().color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
+
         if (collision.gameObject.tag == "Coin")
         {
+            //if(PhotonNetwork.IsMasterClient)
+            {
+                if (pview.IsMine)
+                {
+                    ScoreManageScript.instance1.ScoreUpdater();
+                    PhotonNetwork.Destroy(collision.gameObject);
+                    TankColorChange();
+                }
+            }
             //score += 10;
             //Destroy(collision.gameObject);
-            collision.gameObject.SetActive(false);
+            
+
+            
+
+            
+
             //GetComponent<SpriteRenderer>().color = new Color(Random.Range(0f,1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
             //tmptxt.text = "Score : " + score.ToString();
 
@@ -99,9 +121,19 @@ public class TankMovement : MonoBehaviour
 
             //GameManageScript.instance.CoinCollected();
 
-           // GameManageScript.instance.RPC_CoinCollection();
+            // GameManageScript.instance.RPC_CoinCollection();
 
         }
+        if (collision.gameObject.tag=="Bullet")
+        {
+            bulletHitCount++;
+            if(bulletHitCount>=3)
+            {
+                PhotonNetwork.Destroy(this.gameObject);
+            }
+        }
+        
     }
     
+
 }

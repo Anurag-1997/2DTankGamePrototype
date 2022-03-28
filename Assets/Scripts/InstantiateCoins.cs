@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class InstantiateCoins : MonoBehaviour
 {
@@ -24,9 +25,10 @@ public class InstantiateCoins : MonoBehaviour
         //GameObject tempCoins = ObjectPooler.instance1.getPooledObjects();
         //tempCoins.SetActive(true);
         //tempCoins.transform.position = new Vector3(Random.Range(-20, 20), Random.Range(-10, 10), 0);
-        //Instantiate(instcoin, new Vector3(Random.Range(-20, 20), Random.Range(-10, 10), 0), Quaternion.identity);
+        PhotonNetwork.Instantiate(instcoin.name, new Vector3(Random.Range(-20, 20), Random.Range(-10, 10), 0), Quaternion.identity);
 
         //OBJECT POOLER WITH QUEUE)
-        ObjectPoolerWithQ.instance.GetFromPool("coins", new Vector3(Random.Range(-20, 20), Random.Range(-10, 10), 0));
+        //ObjectPoolerWithQ.instance.GetFromPool("coins", new Vector3(Random.Range(-20, 20), Random.Range(-10, 10), 0));
+
     }
 }
